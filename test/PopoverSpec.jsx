@@ -7,7 +7,7 @@ import TestUtils from 'react-addons-test-utils';
 describe('Popover', () => {
   let popover, tether, requestCloseCallback, closeCallBackCalled;
 
-  const renderPopover = (placement, isOpen, useTargetCallback, offset, isModal) => {
+  const renderPopover = (placement, isOpen, useTargetCallback, tetherConfig, isModal) => {
     let target;
 
     setFixtures('<div id="content"><div id="some-element-id">The Target</div><div id="container"></div></div>');
@@ -31,7 +31,7 @@ describe('Popover', () => {
         isOpen={isOpen}
         onRequestClose={requestCloseCallback}
         target={target}
-        offset={offset}
+        tetherConfig={tetherConfig}
         isModal={isModal}>
         <PopoverOverlay>
           This is the popover content
@@ -135,14 +135,19 @@ describe('Popover', () => {
       });
     });
 
-    it('can override the offsets', () => {
-      renderPopover('bottom-left', true, false, '10px 10px');
+    it('can override tether properties', () => {
+      renderPopover(
+        'bottom-left',
+        true,
+        false,
+        { offset: '10px 10px', attachment: 'left', targetAttachment: 'right'}
+      );
 
       expect(Popover.prototype._createTether).toHaveBeenCalledWith({
         element: ReactDOM.findDOMNode(popover._containerDiv),
         target: ReactDOM.findDOMNode(document.getElementById('some-element-id')),
-        attachment: 'top right',
-        targetAttachment: 'bottom left',
+        attachment: 'left',
+        targetAttachment: 'right',
         offset: '10px 10px'
       });
     });
